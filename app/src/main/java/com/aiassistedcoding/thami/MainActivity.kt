@@ -14,6 +14,7 @@ import com.aiassistedcoding.thami.data.AppDatabase
 import com.aiassistedcoding.thami.ui.theme.AIAssistedCodingTheme
 import com.aiassistedcoding.thami.viewModel.LoginViewModel
 import com.aiassistedcoding.thami.viewModel.RegistrationViewModel
+import com.aiassistedcoding.thami.viewModel.UserListViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,6 +25,7 @@ class MainActivity : ComponentActivity() {
             val database = remember { AppDatabase.getDatabase(context) }
             val registrationViewModel = remember { RegistrationViewModel(database.userDao()) }
             val loginViewModel = remember { LoginViewModel(database.userDao()) }
+            val userListViewModel = remember { UserListViewModel(database.userDao()) }
 
             var currentScreen by remember { mutableStateOf("login") }
 
@@ -33,6 +35,7 @@ class MainActivity : ComponentActivity() {
                         "login" -> {
                             LoginScreen(
                                 viewModel = loginViewModel,
+                                onLoginSuccess = { currentScreen = "userList" },
                                 onSignUpClick = { currentScreen = "registration" },
                                 modifier = Modifier.padding(innerPadding)
                             )
@@ -41,6 +44,13 @@ class MainActivity : ComponentActivity() {
                             RegistrationScreen(
                                 viewModel = registrationViewModel,
                                 onLoginClick = { currentScreen = "login" },
+                                modifier = Modifier.padding(innerPadding)
+                            )
+                        }
+                        "userList" -> {
+                            UserListScreen(
+                                viewModel = userListViewModel,
+                                onBackClick = { currentScreen = "login" },
                                 modifier = Modifier.padding(innerPadding)
                             )
                         }

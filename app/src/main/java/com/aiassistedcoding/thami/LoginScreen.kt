@@ -21,12 +21,18 @@ import kotlinx.coroutines.launch
 fun LoginScreen(
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel,
+    onLoginSuccess: () -> Unit = {},
     onSignUpClick: () -> Unit = {},
     onForgotPasswordClick: () -> Unit = {}
 ) {
     LoginScreenContent(
         onLogin = { email, password, onResult ->
-            viewModel.loginUser(email, password, onResult)
+            viewModel.loginUser(email, password) { success, message ->
+                onResult(success, message)
+                if (success) {
+                    onLoginSuccess()
+                }
+            }
         },
         onSignUpClick = onSignUpClick,
         onForgotPasswordClick = onForgotPasswordClick,
